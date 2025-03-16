@@ -6,6 +6,172 @@
     <title>Document</title>
 </head>
 <body>
-    <div><p>hola mundo</p></div>
+    <div><p>Tutorial: Importar y Empaquetar Datos en QGIS
+
+        Paso 1: Iniciar QGIS y Configurar el Proyecto
+        
+        Abre QGIS con un proyecto vacío.
+        
+        En el Panel del Explorador, navega hasta tu directorio natural_earth.
+        
+        Para facilitar el acceso, haz clic derecho en natural_earth y selecciona Agregar a Favoritos.
+        
+        Guarda tu proyecto como natural-earth-from-space.qgz dentro del directorio natural_earth.
+        
+        Paso 2: Crear un GeoPackage
+        
+        Abre QGIS 3 Desktop.
+        
+        Agrega las capas espaciales al Panel de Capas.
+        
+        Ve a Procesos > Caja de Herramientas.
+        
+        Expande la opción Base de Datos y selecciona Package layers.
+        
+        En la ventana Package layers:
+        
+        Haz clic en el botón ... junto a Input layers y selecciona las capas que deseas agregar.
+        
+        Haz clic en ... > Guardar en archivo... junto a Destination GeoPackage y elige una ubicación y nombre para el archivo.
+        
+        Haz clic en Ejecutar en segundo plano y espera a que se complete el proceso.
+        
+        Paso 3: Importar Datos al GeoPackage
+        
+        Verifica la creación del GeoPackage en el Administrador de Bases de Datos.
+        
+        Expande el archivo .gpkg y revisa que las capas importadas estén correctamente almacenadas.
+        
+        Agrega las capas del GeoPackage al mapa haciendo doble clic en ellas.
+        
+        Paso 4: Estilizar las Capas
+        
+        Desactiva todas las capas excepto ne_10m_admin_0_countries y ne_50m_graticules_15.
+        
+        Estiliza países:
+        
+        Relleno simple con:
+        
+        Color de relleno: Gris
+        
+        Color de borde: Blanco
+        
+        Ancho de borde: 0.2
+        
+        Estiliza graticules:
+        
+        Línea simple con:
+        
+        Color: Negro
+        
+        Ancho de trazo: 0.3
+        
+        Paso 5: Proyección Ortográfica Azimutal
+        
+        En Proyecto > Propiedades, ve a la pestaña CRS.
+        
+        Busca The_World_From_Space y copia el siguiente código PROJ:
+        
+        +proj=ortho +lat_0=15 +lon_0=-90 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs
+        
+        Para crear una proyección personalizada:
+        
+        Ve a Configuración > Proyecciones Personalizadas.
+        
+        Haz clic en + y nómbrala Custom_CentralAmerica_From_Space.
+        
+        Pega el código PROJ y ajusta lat_0 y lon_0 si es necesario.
+        
+        Aplica el nuevo CRS en Propiedades del Proyecto.
+        
+        Desactiva ne_10m_admin_0_countries y activa NE1_50M_SR_W.tif.
+        
+        Paso 6: Extraer un Continente (Europa)
+        
+        Activa la Caja de Herramientas de Procesamiento en Complementos > Administrar e Instalar Complementos.
+        
+        En la Caja de Herramientas de Procesamiento, busca Selección de Vectores > Extraer por Atributo.
+        
+        Configura los siguientes parámetros:
+        
+        Capa de entrada: ne_10m_admin_0_countries
+        
+        Atributo de selección: CONTINENT
+        
+        Valor: Europe
+        
+        Salida: ogr:dbname='natural_earth.gpkg' table="europe" (geom)
+        
+        Paso 7: Crear Temas de Mapa
+        
+        Tema de Mapa de Ubicación
+        
+        Ordena las capas (de arriba a abajo):
+        
+        ne_50m_graticules_15
+        
+        europe
+        
+        NE1_50M_SR_W.tif
+        
+        Estiliza las capas:
+        
+        Graticules: Línea blanca, 50% de opacidad
+        
+        Europa: Relleno azul, borde azul oscuro
+        
+        Ve a Administrar Temas de Mapa y crea un tema llamado globe.
+        
+        Tema de Ríos de Europa
+        
+        Ordena las capas (de arriba a abajo):
+        
+        ne_10m_lakes
+        
+        ne_10m_rivers_europe
+        
+        ne_10m_rivers_lake_centerlines_scale_rank
+        
+        NE1_LR_LC_SR_W_DR
+        
+        Estiliza las capas:
+        
+        Lagos: Relleno azul (muestreado del océano en el ráster), sin borde
+        
+        Ríos: Líneas azules con anchos según stream order (0.1 a 1.25)
+        
+        Agrega etiquetas a los ríos principales.
+        
+        Crea un nuevo tema llamado map.
+        
+        Paso 8: Diseño para Impresión
+        
+        Ve a Proyecto > Nuevo Diseño de Impresión.
+        
+        Nómbralo rivers-of-europe.
+        
+        Usa el botón Agregar Mapa para crear un mapa grande.
+        
+        Establece CRS en Europe_Lambert_Conformal_Conic
+        
+        Fija una escala de 15000000
+        
+        Marca Seguir Tema de Mapa y selecciona map
+        
+        Agrega una Barra de Escala y configura su estilo como numérico.
+        
+        Agrega un Mapa de Inserción:
+        
+        Usa la herramienta Agregar Mapa para crear una inserción en la esquina superior izquierda.
+        
+        Establece CRS en Custom_CentralAmerica_From_Space
+        
+        Fija una escala de 200000000
+        
+        Marca Seguir Tema de Mapa y selecciona globe
+        
+        Desactiva Fondo
+        
+        Exporta el mapa final como .jpg.</p></div>
 </body>
 </html>
