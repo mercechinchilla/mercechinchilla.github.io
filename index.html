@@ -1,11 +1,215 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Importar y Empaquetar Datos en QGIS</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h1, h2 {
+      color: #333;
+    }
+
+    ul {
+      margin-left: 20px;
+    }
+
+    .content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .step {
+      margin-bottom: 20px;
+    }
+
+    .step p {
+      margin: 0;
+      padding: 5px 0;
+    }
+
+    .note {
+      background-color: #e9ecef;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 0.9em;
+    }
+
+    .code {
+      background-color: #f8f9fa;
+      border-left: 4px solid #007bff;
+      padding: 10px;
+      font-family: 'Courier New', monospace;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-  
+
+  <div class="content">
+    <h1>Importar y Empaquetar Datos en QGIS</h1>
+
+    <div class="step">
+      <h2>Iniciar el Proyecto en QGIS</h2>
+      <ul>
+        <li>Abre QGIS con un proyecto vacío.</li>
+        <li>En el panel "Navegador" de QGIS, navega hasta tu directorio <strong>natural_earth</strong>. Si lo prefieres, puedes agregarlo a tus favoritos.</li>
+        <li>Haz clic derecho en el directorio <strong>natural_earth</strong> y selecciona <strong>Nuevo GeoPackage</strong>. Nómbralo como <strong>natural-earth-from-space.gpkg</strong>.</li>
+        <li>Guarda el proyecto actual como <strong>natural-earth-from-space.gqz</strong> en el directorio <strong>natural_earth</strong>.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <h2>Importar Datos al GeoPackage</h2>
+      <p>Arrastra y suelta los siguientes archivos en el archivo <strong>natural-earth-from-space.gpkg</strong> desde el panel Navegador:</p>
+      <ul>
+        <li>ne_50m_graticules_15</li>
+        <li>ne_10m_admin_0_countries</li>
+        <li>ne_10m_lakes</li>
+        <li>ne_10m_rivers_lake_centerlines_scale_rank</li>
+        <li>ne_10m_rivers_europe</li>
+        <li>NE1_50M_SR_W.tif</li>
+        <li>NE1_LR_LC_SR_W_DR.tif</li>
+      </ul>
+      <p>Esto importará estos datos al GeoPackage para almacenarlos de manera más eficiente y facilitar su portabilidad.</p>
+    </div>
+
+    <div class="step">
+      <h2>Agregar los Datos al Mapa</h2>
+      <p>En el "Navegador" de QGIS, haz doble clic en los datos dentro del GeoPackage para agregarlos al mapa.</p>
+    </div>
+
+    <div class="step">
+      <h2>Configurar el Estilo de los Datos</h2>
+      <ul>
+        <li>Apaga todas las capas excepto las de <strong>Países</strong> y <strong>Graticulas</strong>.</li>
+        <li>Estiliza las capas de la siguiente manera:
+          <ul>
+            <li>Para los países, usa un relleno simple con color gris, el trazo en blanco y un grosor de trazo de 0.2.</li>
+            <li>Para las graticulas, usa una línea simple de color negro con un grosor de trazo de 0.3.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <h2>Proyección Azimutal Ortográfica</h2>
+      <h3>Configuración de la Proyección Azimutal Ortográfica</h3>
+      <p>Las mapas de localización se usan para mostrar la ubicación de un proyecto y pueden ir dentro de mapas más detallados. Usa una proyección ortográfica azimutal para crear un globo para un mapa de localización.</p>
+      <p>Primero, establece una proyección ortográfica azimutal predefinida. En el menú <strong>Proyecto</strong>, selecciona <strong>Propiedades</strong>. En el cuadro de diálogo de propiedades, selecciona la pestaña <strong>CRS</strong> y busca la proyección <strong>The_World_From_Space</strong>.</p>
+      <p>Copia la definición PROJ de esta proyección. La usarás para crear una proyección personalizada en el siguiente paso.</p>
+    </div>
+
+    <div class="step">
+      <h3>Crear una Proyección Personalizada</h3>
+      <p>En el menú <strong>Configuración</strong>, selecciona <strong>Proyección Personalizada</strong>.</p>
+      <p>Usa el botón + para crear una nueva proyección CRS. Nombrala como <strong>Custom_World_From_Space</strong>, establece el formato en String PROJ, y pega la definición PROJ para <strong>The_World_From_Space</strong>.</p>
+      <p>Edita la proyección ajustando los valores de lat_0 y lon_0 (latitud y longitud del origen natural) para centrar la proyección en tu área de estudio.</p>
+      <div class="code">
+        <pre>+proj=ortho +lat_0=42.5333333333 +lon_0=-0.5 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs</pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <h3>Aplicar la Nueva Proyección Personalizada</h3>
+      <p>Vuelve a las Propiedades del Proyecto en la pestaña CRS, busca la proyección <strong>Custom_World_From_Space</strong> y selecciónala como el CRS.</p>
+      <p>En el cuadro de diálogo CRS personalizado, ajusta los valores de latitud y longitud del origen natural hasta que la proyección se centre en tu área de estudio (por ejemplo, Europa).</p>
+    </div>
+
+    <div class="step">
+      <h2>Extracción de un Continente</h2>
+      <h3>Extraer un Mapa Vectorial de Europa</h3>
+      <p>Extrae un mapa de Europa desde la capa <strong>ne_10m_admin_0_countries</strong> para mostrar tu área de estudio en el mapa de localización.</p>
+      <p>Ve al menú <strong>Complementos</strong>, selecciona <strong>Gestionar e Instalar Complementos</strong> y activa el complemento <strong>Processing</strong>, que es un complemento central de QGIS.</p>
+      <p>Esto habilitará el panel Processing Toolbox en la parte derecha de tu ventana de QGIS.</p>
+    </div>
+
+    <div class="step">
+      <h3>Usar el Comando "Extract by Attribute"</h3>
+      <p>En el Processing Toolbox, navega a <strong>Selección Vectorial</strong> y selecciona <strong>Extract by Attribute</strong>.</p>
+      <p>Configura los parámetros de la herramienta:</p>
+      <ul>
+        <li>Capa de entrada: ne_50m_admin_0_countries.</li>
+        <li>Atributo de selección: CONTINENT.</li>
+        <li>Valor: Europe.</li>
+        <li>Características que coinciden: ogr:dbname='natural_earth.gpkg' table="europe" (geom).</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <h2>Crear Temas</h2>
+      <h3>Guardar Diferentes Estilos de Capas como Temas</h3>
+      <p>Los temas son útiles para guardar diferentes disposiciones y estilos de capas, especialmente para configuraciones de impresión con múltiples mapas.</p>
+    </div>
+
+    <div class="step">
+      <h3>Tema del Mapa de Localización</h3>
+      <p>En el panel de capas, organiza las siguientes capas de arriba hacia abajo:</p>
+      <ul>
+        <li>ne_50m_graticules_15</li>
+        <li>europe</li>
+        <li>NE1_50M_SR_W.tif</li>
+      </ul>
+      <p>Estiliza las graticulas con una línea simple blanca, y ajusta la opacidad al 50% si lo deseas.</p>
+      <p>Estiliza Europa con un relleno simple de color azul y un borde de color azul oscuro.</p>
+      <p>Crea un nuevo tema para el mapa de localización seleccionando <strong>Gestionar Temas de Mapa</strong> en el administrador de capas. Agrega un tema llamado <strong>globe</strong>.</p>
+    </div>
+
+    <div class="step">
+      <h3>Tema del Mapa de Ríos en Europa</h3>
+      <ul>
+        <li>Organiza las siguientes capas de arriba hacia abajo:
+          <ul>
+            <li>ne_10m_lakes</li>
+            <li>ne_10m_rivers_europe</li>
+            <li>ne_10m_rivers_lake_centerlines_scale_rank</li>
+            <li>NE1_LR_LC_SR_W_DR</li>
+          </ul>
+        </li>
+        <li>Estiliza los lagos con un azul tomado del océano en el raster de Natural Earth con un trazo transparente.</li>
+        <li>Estiliza los ríos europeos con un trazo azul de peso 0.075.</li>
+        <li>Ajusta el trazo de los ríos basándote en el orden del río usando la función <strong>Data Defined Override</strong>.</li>
+        <li>Crea un nuevo tema llamado <strong>map</strong>.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <h2>Diseño de Imprimir</h2>
+      <h3>Configurar una Nueva Distribución de Impresión</h3>
+      <p>En el menú <strong>Proyecto</strong>, selecciona <strong>Nuevo diseño de impresión</strong> y crea un nuevo diseño llamado <strong>rivers-of-europe</strong>.</p>
+    </div>
+
+    <div class="step">
+      <h3>Agregar Mapas a la Distribución</h3>
+      <ul>
+        <li>Usa el botón <strong>Agregar mapa</strong> en la barra de herramientas de la distribución de impresión para dibujar un nuevo lienzo de mapa.</li>
+        <li>Agrega un mapa que abarque todo el lienzo, selecciona y renómbralo como <strong>mapa</strong>.</li>
+        <li>En las propiedades del ítem, ajusta el CRS a una proyección como <strong>Europe_Lambert_Conformal_Conic</strong> y una escala fija como 15000000.</li>
+        <li>En la sección de capas, selecciona <strong>Seguir tema del mapa</strong> y asigna el tema <strong>map</strong>.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <h3>Agregar un Mapa Inset</h3>
+      <p>Añade otro mapa pequeño en la esquina superior izquierda del lienzo como mapa de localización.</p>
+      <p>Ajusta sus propiedades a la proyección <strong>Custom_World_From_Space</strong> y una escala fija de 200000000.</p>
+      <p>En la sección de capas, selecciona <strong>Seguir tema del mapa</strong> y asigna el tema <strong>globe</strong>. Desmarca la opción <strong>Fondo</strong> para ocultar el fondo blanco detrás del globo.</p>
+    </div>
+
+    <div class="step">
+      <h3>Exportar el Mapa</h3>
+      <p>Finalmente, usa el botón <strong>Exportar como imagen</strong> para exportar tu mapa como un archivo .jpg.</p>
+    </div>
+  </div>
+
 </body>
 </html>
